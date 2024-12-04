@@ -27,24 +27,9 @@ module.exports = function (plop) {
         {
           type: 'add',
           path: 'views/{{name}}/index.pug',
-          templateFile: 'plop-templates/views/index.pug.hbs',
-        },
-        {
-          type: 'add',
-          path: 'views/{{name}}/create.pug',
-          templateFile: 'plop-templates/views/create.pug.hbs',
-        },
-        {
-          type: 'add',
-          path: 'views/{{name}}/edit.pug',
-          templateFile: 'plop-templates/views/edit.pug.hbs',
-        },
-        {
-          type: 'add',
-          path: 'views/{{name}}/delete.pug',
-          templateFile: 'plop-templates/views/delete.pug.hbs',
-        },
-      ],
+          templateFile: 'plop-templates/views/{{name}}.pug',
+        }],
     });
-  };
+  }
+
   
