@@ -11,4 +11,4 @@ Scenario: AddPost error
 Given a user connected to his account
 And "content" and "image" fields are empty
 When he click on the button "Publier"
-Then an error message is displayed
+Then an error message "Le formulaire doit contenir un texte ou une image" is displayed

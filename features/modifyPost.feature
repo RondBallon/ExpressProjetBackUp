@@ -11,4 +11,4 @@ Given a user connected to his account
 And has published a post
 When he click on the button "Modifier"
 But no content has been modified
-Then a message is displayed
+Then a message is displayed "Le contenu ne comporte pas de modification"
