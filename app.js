@@ -1,53 +1,57 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// Importation des modules nécessaires
+var createError = require('http-errors'); // Permet de générer des erreurs HTTP personnalisées.
+var express = require('express'); // Framework web pour simplifier la création d'applications Node.js.
+var path = require('path'); // Fournit des outils pour gérer et manipuler les chemins de fichiers.
+var cookieParser = require('cookie-parser'); // Middleware pour analyser les cookies dans les requêtes.
+var logger = require('morgan'); // Middleware pour journaliser les requêtes HTTP.
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// Importation des routes
+var indexRouter = require('./routes/index'); // Route pour la racine (`/`).
+var usersRouter = require('./routes/users'); // Route pour `/users`.
 
-var app = express();
+var app = express(); // Création d'une application Express.
 
-// Sequelize (Ajout de la base de données)
-const sequelize = require('./sequelize');
-const User = require('./models/User'); // Exemple de modèle
+// Configuration de Sequelize pour gérer la base de données
+const sequelize = require('./sequelize'); // Instance Sequelize configurée pour la base de données.
+const User = require('./models/User'); // Exemple d'importation d'un modèle Sequelize représentant une table.
 
-// Synchronisation de la base de données
+// Synchronisation de la base de données via Sequelize
 (async () => {
   try {
-    await sequelize.sync({ alter: true });
-    console.log('Database synchronized successfully.');
+    await sequelize.sync({ alter: true }); // Synchronise les modèles avec la base de données en modifiant les schémas si nécessaire.
+    console.log('Database synchronized successfully.'); // Log en cas de succès.
   } catch (error) {
-    console.error('Database synchronization failed:', error);
+    console.error('Database synchronization failed:', error); // Log en cas d'échec.
   }
 })();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// Configuration du moteur de vue
+app.set('views', path.join(__dirname, 'views')); // Définit le répertoire contenant les fichiers de templates.
+app.set('view engine', 'jade'); // Définit `jade` (renommé `pug`) comme moteur de templates.
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// Configuration des middlewares
+app.use(logger('dev')); // Ajoute un journal des requêtes HTTP en mode développement.
+app.use(express.json()); // Middleware pour analyser les corps de requêtes JSON.
+app.use(express.urlencoded({ extended: false })); // Analyse les données encodées dans les URL (simples objets).
+app.use(cookieParser()); // Middleware pour analyser les cookies.
+app.use(express.static(path.join(__dirname, 'public'))); // Sert les fichiers statiques du répertoire `public`.
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// Déclaration des routes
+app.use('/', indexRouter); // Utilise `indexRouter` pour la route racine `/`.
+app.use('/users', usersRouter); // Utilise `usersRouter` pour la route `/users`.
 
-// catch 404 and forward to error handler
+// Gestion des erreurs 404
 app.use(function(req, res, next) {
-  next(createError(404));
+  next(createError(404)); // Crée une erreur 404 pour les routes non trouvées et la passe au gestionnaire d'erreurs.
 });
 
-// error handler
+// Gestionnaire global d'erreurs
 app.use(function(err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.message = err.message; // Définit un message d'erreur local.
+  res.locals.error = req.app.get('env') === 'development' ? err : {}; // Affiche l'erreur complète en mode développement uniquement.
 
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500); // Définit le code d'état HTTP (404, 500, etc.).
+  res.render('error'); // Rend une page d'erreur via le moteur de vue.
 });
 
-module.exports = app;
+module.exports = app; // Exporte l'application pour être utilisée ailleurs (comme dans `bin/www` pour démarrer le serveur).
